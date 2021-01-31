@@ -3,6 +3,4 @@ dist
 
 #ignore vim swap files
 *~
-*.swp
-*.swo
-*.swn
+*.sw*

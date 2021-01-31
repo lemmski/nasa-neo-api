@@ -5,17 +5,22 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "test": "npm test",
+    "test": "jest",
     "lint": "npx prettier --write . && npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "author": "Aleksi Lemmetyinen",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.12.7",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
+    "babel-jest": "^26.6.3",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "jest": "^26.6.3",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3"
   },
