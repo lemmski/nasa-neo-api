@@ -7,6 +7,7 @@ interface FeedResponse {
 }
 
 interface NearEarthObjectsByDate {
+  [index: string]: NearEarthObject[];
 }
 
 interface FeedResponseLinks {
@@ -94,7 +95,7 @@ export default class NasaNeoAPI extends RESTDataSource {
       end_date: endDate,
     });
     return Object.values(data?.near_earth_objects)
-      .flatMap((nearEarthObject: NearEarthObject) => nearEarthObject)
+      .flatMap((nearEarthObject: NearEarthObject[]) => nearEarthObject)
       .sort((a, b) => {
         return (
           this.smallestDistanceFilteredValue(a) - this.smallestDistanceFilteredValue(b)
