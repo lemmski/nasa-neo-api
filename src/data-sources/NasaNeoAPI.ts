@@ -1,13 +1,13 @@
 import { RESTDataSource, RequestOptions } from "apollo-datasource-rest";
 
 interface FeedResponse {
-  element_count: number
-  links: FeedResponseLinks
-  near_earth_objects: NearEarthObjectsByDate
+  element_count?: number | null
+  links?: FeedResponseLinks | null
+  near_earth_objects?: NearEarthObjectsByDate | null
 }
 
 interface NearEarthObjectsByDate {
-  [index: string]: NearEarthObject[];
+  [index: string]: NearEarthObject[] | null | undefined;
 }
 
 interface FeedResponseLinks {
@@ -94,8 +94,8 @@ export default class NasaNeoAPI extends RESTDataSource {
       start_date: startDate,
       end_date: endDate,
     });
-    return Object.values(data?.near_earth_objects)
-      .flatMap((nearEarthObject: NearEarthObject[]) => nearEarthObject)
+    return Object.values(data?.near_earth_objects ?? {})
+      .flatMap((nearEarthObject: NearEarthObject[] | null | undefined) => nearEarthObject ?? [])
       .sort((a, b) => {
         return (
           this.smallestDistanceFilteredValue(a) - this.smallestDistanceFilteredValue(b)
