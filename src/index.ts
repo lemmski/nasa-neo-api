@@ -88,15 +88,24 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books,
-    closestNearEarthObject: async (_source: any, _args: any, { dataSources }: {dataSources: any}) => {
-      return dataSources.nasaNeoApi.getAsteroidClosestToEarthInRange('2015-09-07', '2015-09-08');
+    closestNearEarthObject: async (
+      _source: any,
+      _args: any,
+      { dataSources }: { dataSources: any }
+    ) => {
+      return dataSources.nasaNeoApi.getAsteroidClosestToEarthInRange(
+        "2015-09-07",
+        "2015-09-08"
+      );
     },
   },
 };
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers,
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
   dataSources: () => {
     return {
       nasaNeoApi: new NasaNeoAPI(),

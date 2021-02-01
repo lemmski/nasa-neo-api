@@ -1,19 +1,19 @@
 import { RESTDataSource, RequestOptions } from "apollo-datasource-rest";
 
 interface FeedResponse {
-  element_count?: number | null
-  links?: FeedResponseLinks | null
-  near_earth_objects?: NearEarthObjectsByDate | null
+  element_count?: number | null;
+  links?: FeedResponseLinks | null;
+  near_earth_objects?: NearEarthObjectsByDate | null;
 }
 
 interface NearEarthObjectsByDate {
-  [index: string]: NearEarthObject[] | null | undefined;
+  [index: string]: NearEarthObject[] | null | undefined;
 }
 
 interface FeedResponseLinks {
-  next: string
-  prev: string
-  self: string
+  next: string;
+  prev: string;
+  self: string;
 }
 
 interface NearEarthObject {
@@ -45,26 +45,26 @@ interface RelativeVelocy {
 }
 
 interface EstimatedDiameter {
-  feet: number
-  kilometers: number
-  meters: number
-  miles: number
+  feet: DiameterMeasurement;
+  kilometers: DiameterMeasurement;
+  meters: DiameterMeasurement;
+  miles: DiameterMeasurement;
 }
 
 interface NearEarthObjectLinks {
-  self: string
+  self: string;
 }
 
 interface MissDistance {
-  astronomical: string
-  kilometers: string
-  lunar: string
-  miles: string
+  astronomical: string;
+  kilometers: string;
+  lunar: string;
+  miles: string;
 }
 
-interface DiamaterMeasurement {
-  estimated_diameter_max: number
-  estimated_diameter_min: number
+interface DiameterMeasurement {
+  estimated_diameter_max: number;
+  estimated_diameter_min: number;
 }
 
 export default class NasaNeoAPI extends RESTDataSource {
@@ -89,21 +89,28 @@ export default class NasaNeoAPI extends RESTDataSource {
     );
   }
 
-  async getAsteroidClosestToEarthInRange(startDate: string, endDate: string) {
+  async getAsteroidClosestToEarthInRange(
+    startDate: string,
+    endDate: string
+  ): Promise<NearEarthObject> {
     const data: FeedResponse = await this.get("neo/rest/v1/feed", {
       start_date: startDate,
       end_date: endDate,
     });
     return Object.values(data?.near_earth_objects ?? {})
-      .flatMap((nearEarthObject: NearEarthObject[] | null | undefined) => nearEarthObject ?? [])
+      .flatMap(
+        (nearEarthObject: NearEarthObject[] | null | undefined) =>
+          nearEarthObject ?? []
+      )
       .sort((a, b) => {
         return (
-          this.smallestDistanceFilteredValue(a) - this.smallestDistanceFilteredValue(b)
+          this.smallestDistanceFilteredValue(a) -
+          this.smallestDistanceFilteredValue(b)
         );
       })[0];
   }
 
-  willSendRequest(request: RequestOptions) {
+  willSendRequest(request: RequestOptions): void {
     request.params.set("api_key", process.env.NASA_API_KEY ?? "DEMO_KEY");
   }
 }
