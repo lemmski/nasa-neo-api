@@ -1,40 +1,51 @@
 import NasaNeoAPI from "../NasaNeoAPI";
+import { createTestClient } from "apollo-server-testing";
+import { ApolloServer, gql } from "apollo-server";
+import typeDefs from "../../typeDefs";
+import resolvers from "../../resolvers";
 
-const mocks = {
-  get: jest.fn(),
+//const ds = new NasaNeoAPI();
+//ds.initialize()
+const GET_CLOSEST_NEO = gql`
+query closestNeo 
+  {
+    closestNearEarthObject {
+      absolute_magnitude_h
+      name
+      id
+      close_approach_data {
+        miss_distance {
+          astronomical
+        }
+      }
+    }
+  }
+
+`;
+
+const constructTestServer = () => {
+  const nasaNeoApi = new NasaNeoAPI();
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    dataSources: () => ({ nasaNeoApi }),
+  });
+
+  return { server, nasaNeoApi };
 };
-/*
-class MockNasaNeoAPI extends NasaNeoAPI { 
-  get: mocks.get
-  fetch: jest.fn()
-}
- */
-const ds = new NasaNeoAPI();
-// @ts-ignore
-ds.get = mocks.get
+
 describe("[NasaNeoAPI.getAsteroidClosestToEarthInRange]", () => {
   it("should look up closest miss from api", async () => {
-    mocks.get.mockReturnValueOnce([mockNeoApiResponse]);
-    const res = await ds.getAsteroidClosestToEarthInRange(
-      "2015-09-07",
-      "2015-09-08"
-    );
-
-    expect(res).toEqual({});
-    expect(mocks.get).toBeCalledWith("launches", { flight_number: 1 });
+    const { server, nasaNeoApi } = constructTestServer();
+    (nasaNeoApi.get as any) = jest.fn(() => Promise.resolve(mockNeoApiResponse));
+    const { query } = createTestClient(server);
+    const res = await query({ query: GET_CLOSEST_NEO});
+    expect(res).toMatchSnapshot();
   });
 });
 
 const mockNeoApiResponse = {
-  links: {
-    next:
-      "http://www.neowsapp.com/rest/v1/feed?start_date=2015-09-08&end_date=2015-09-09&detailed=false&api_key=DEMO_KEY",
-    prev:
-      "http://www.neowsapp.com/rest/v1/feed?start_date=2015-09-06&end_date=2015-09-07&detailed=false&api_key=DEMO_KEY",
-    self:
-      "http://www.neowsapp.com/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&detailed=false&api_key=DEMO_KEY",
-  },
-  element_count: 23,
   near_earth_objects: {
     "2015-09-08": [
       {

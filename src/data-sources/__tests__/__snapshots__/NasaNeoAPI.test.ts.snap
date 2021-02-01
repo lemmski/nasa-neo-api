@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[NasaNeoAPI.getAsteroidClosestToEarthInRange] should look up closest miss from api 1`] = `
+Object {
+  "data": Object {
+    "closestNearEarthObject": Object {
+      "absolute_magnitude_h": 26.7,
+      "close_approach_data": Array [
+        Object {
+          "miss_distance": Object {
+            "astronomical": "0.0163818512",
+          },
+        },
+      ],
+      "id": "3726788",
+      "name": "(2015 RG2)",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

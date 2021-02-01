@@ -97,7 +97,8 @@ export default class NasaNeoAPI extends RESTDataSource {
       start_date: startDate,
       end_date: endDate,
     });
-    return Object.values(data?.near_earth_objects ?? {})
+    console.log(data)
+    const returnObj = Object.values(data?.near_earth_objects ?? {})
       .flatMap(
         (nearEarthObject: NearEarthObject[] | null | undefined) =>
           nearEarthObject ?? []
@@ -108,6 +109,8 @@ export default class NasaNeoAPI extends RESTDataSource {
           this.smallestDistanceFilteredValue(b)
         );
       })[0];
+    console.log(JSON.stringify(returnObj, null, 2));
+    return returnObj;
   }
 
   willSendRequest(request: RequestOptions): void {
