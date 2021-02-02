@@ -110,6 +110,8 @@ export default class NasaNeoAPI extends RESTDataSource {
       })[0];
   }
 
+  async getLargestNearEarthObjectByMonth(startYear: string, endYear: string) {}
+
   willSendRequest(request: RequestOptions): void {
     request.params.set("api_key", process.env.NASA_API_KEY ?? "DEMO_KEY");
   }

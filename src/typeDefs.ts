@@ -59,6 +59,10 @@ const typeDefs = gql`
       startDate: String!
       endDate: String!
     ): NearEarthObject
+    largestNearEarthObjectsByMonth(
+      startYear: String!
+      endYear: String!
+    ): [NearEarthObject]!
   }
 `;
 export default typeDefs;

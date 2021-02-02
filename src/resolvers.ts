@@ -6,12 +6,20 @@ const resolvers = {
       _source: any,
       { startDate, endDate }: { startDate: string; endDate: string },
       { dataSources }: { dataSources: any }
-    ) => {
-      return dataSources.nasaNeoApi.getAsteroidClosestToEarthInRange(
+    ) =>
+      dataSources.nasaNeoApi.getAsteroidClosestToEarthInRange(
         startDate,
         endDate
-      );
-    },
+      ),
+    largestNearEarthObjectsByMonth: async (
+      _source: any,
+      { startYear, endYear }: { startYear: string; endYear: string },
+      { dataSources }: { dataSources: any }
+    ) =>
+      dataSources.nasaNeoApi.getLargestNearEarthObjectByMonth(
+        startYear,
+        endYear
+      ),
   },
 };
 export default resolvers;
