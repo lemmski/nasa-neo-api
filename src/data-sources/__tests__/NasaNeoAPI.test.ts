@@ -7,9 +7,9 @@ import resolvers from "../../resolvers";
 //const ds = new NasaNeoAPI();
 //ds.initialize()
 const GET_CLOSEST_NEO = gql`
-query closestNeo 
+query closestNeo($startDate: String!, $endDate: String!) 
   {
-    closestNearEarthObject {
+    closestNearEarthObject(startDate: $startDate, endDate: $endDate) {
       absolute_magnitude_h
       name
       id
@@ -36,11 +36,11 @@ const constructTestServer = () => {
 };
 
 describe("[NasaNeoAPI.getAsteroidClosestToEarthInRange]", () => {
-  it("should look up closest miss from api", async () => {
+  it("should look up closest miss from api response", async () => {
     const { server, nasaNeoApi } = constructTestServer();
     (nasaNeoApi.get as any) = jest.fn(() => Promise.resolve(mockNeoApiResponse));
     const { query } = createTestClient(server);
-    const res = await query({ query: GET_CLOSEST_NEO});
+    const res = await query({ query: GET_CLOSEST_NEO, variables: {startDate: "2015-09-07", endDate: "2015-09-08"}});
     expect(res).toMatchSnapshot();
   });
 });

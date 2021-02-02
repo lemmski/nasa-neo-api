@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`[NasaNeoAPI.getAsteroidClosestToEarthInRange] should look up closest miss from api 1`] = `
+exports[`[NasaNeoAPI.getAsteroidClosestToEarthInRange] should look up closest miss from api response 1`] = `
 Object {
   "data": Object {
     "closestNearEarthObject": Object {
