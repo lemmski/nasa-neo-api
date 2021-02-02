@@ -2,6 +2,8 @@ node_modules
 dist
 coverage
 
+src/generated/
+
 #ignore vim swap files
 *~
 *.sw*

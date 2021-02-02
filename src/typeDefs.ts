@@ -3,14 +3,6 @@ import { gql } from "apollo-server";
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
-
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
-
   type DiameterMinMax {
     estimated_diameter_min: Float
     estimated_diameter_max: Float
@@ -62,9 +54,6 @@ const typeDefs = gql`
     neo_reference_id: ID
   }
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
   type Query @cacheControl(maxAge: 6000) {
     closestNearEarthObject(
       startDate: String!

@@ -10,11 +10,11 @@ console.log("");
 const dataStorage = {};
 
 fetchPage();
-async function fetchPage(page = 0) {
-  const response = await fetch(
-    `http://www.neowsapp.com/rest/v1/neo/browse?page=${page}&size=20&api_key=${
-      process.env.NASA_API_KEY ?? "DEMO_KEY"
-    }`
-  ).then((response) => response.json());
+async function fetchPage(
+  url = `http://www.neowsapp.com/rest/v1/neo/browse?page=0&size=20&api_key=${
+    process.env.NASA_API_KEY ?? "DEMO_KEY"
+  }`
+) {
+  const response = await fetch(url).then((response) => response.json());
   console.log("success:", response);
 }

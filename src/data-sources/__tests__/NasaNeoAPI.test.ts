@@ -36,6 +36,7 @@ const constructTestServer = () => {
 describe("[NasaNeoAPI.getAsteroidClosestToEarthInRange]", () => {
   it("should look up closest miss from api response", async () => {
     const { server, nasaNeoApi } = constructTestServer();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (nasaNeoApi.get as any) = jest.fn(() =>
       Promise.resolve(mockNeoApiResponse)
     );
