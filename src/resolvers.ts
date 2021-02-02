@@ -4,7 +4,7 @@ const resolvers = {
   Query: {
     closestNearEarthObject: async (
       _source: any,
-      {startDate, endDate},
+      { startDate, endDate }: { startDate: string; endDate: string },
       { dataSources }: { dataSources: any }
     ) => {
       return dataSources.nasaNeoApi.getAsteroidClosestToEarthInRange(

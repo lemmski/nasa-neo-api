@@ -65,8 +65,11 @@ const typeDefs = gql`
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    closestNearEarthObject(startDate: String!, endDate: String!): NearEarthObject
+  type Query @cacheControl(maxAge: 6000) {
+    closestNearEarthObject(
+      startDate: String!
+      endDate: String!
+    ): NearEarthObject
   }
 `;
 export default typeDefs;

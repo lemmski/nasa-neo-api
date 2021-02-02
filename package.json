@@ -6,7 +6,9 @@
   "scripts": {
     "start": "tsc && node dist/index.js",
     "test": "jest",
-    "lint": "npx prettier --write . && npx eslint . --ext .js,.jsx,.ts,.tsx"
+    "coverage": "jest --coverage",
+    "lint": "npx prettier --write . && npx eslint . --ext .js,.jsx,.ts,.tsx",
+    "populate-top-diameter-by-month": "tsc && node dist/utils/fetch-top-diameters-by-month.js"
   },
   "author": "Aleksi Lemmetyinen",
   "license": "ISC",
