@@ -119,7 +119,29 @@ export default class NasaNeoAPI extends RESTDataSource {
   async getLargestNearEarthObjectByMonth(
     startYear: string,
     endYear: string
-  ): Promise<void> {}
+  ): Promise<Promise<any[]>[]> {
+    return this.generateRangeIntervals(startYear, endYear).map(
+      async (monthIntervals, index) => {
+        await new Promise(res => setTimeout(res, index * 15000));
+        return await Promise.all(
+          monthIntervals.map(([startDate, endDate]) => {
+            console.log(
+              "calling fetch at:",
+              new Date(),
+              "start:",
+              startDate.toISOString().slice(0, 10),
+              "end:",
+              endDate.toISOString().slice(0, 10)
+            );
+            return this.get("neo/rest/v1/feed", {
+              start_date: startDate.toISOString().slice(0, 10),
+              end_date: endDate.toISOString().slice(0, 10),
+            });
+          })
+        );
+      }
+    );
+  }
 
   generateRangeIntervals(startYear: string, endYear: string) {
     return eachMonthOfInterval(
