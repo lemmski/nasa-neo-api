@@ -4,8 +4,6 @@ import { ApolloServer, gql } from "apollo-server";
 import typeDefs from "../../typeDefs";
 import resolvers from "../../resolvers";
 
-//const ds = new NasaNeoAPI();
-//ds.initialize()
 const GET_CLOSEST_NEO = gql`
   query closestNeo($startDate: String!, $endDate: String!) {
     closestNearEarthObject(startDate: $startDate, endDate: $endDate) {
@@ -46,6 +44,14 @@ describe("[NasaNeoAPI.getAsteroidClosestToEarthInRange]", () => {
       variables: { startDate: "2015-09-07", endDate: "2015-09-08" },
     });
     expect(res).toMatchSnapshot();
+  });
+});
+
+describe("[NasaNeoAPI.generateRangeIntervals]", () => {
+  it("should generate weekly intervals spanning every day in each month", async () => {
+    const nasaNeoApi = new NasaNeoAPI();
+    const intervals = nasaNeoApi.generateRangeIntervals("2017", "2019");
+    expect(intervals).toMatchSnapshot();
   });
 });
 

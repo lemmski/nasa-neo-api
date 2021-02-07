@@ -1,4 +1,6 @@
 import { RESTDataSource, RequestOptions } from "apollo-datasource-rest";
+import { zonedTimeToUtc } from "date-fns-tz";
+import { eachMonthOfInterval } from "../utils/date-functions";
 
 interface FeedResponse {
   element_count?: number | null;
@@ -110,7 +112,22 @@ export default class NasaNeoAPI extends RESTDataSource {
       })[0];
   }
 
-  async getLargestNearEarthObjectByMonth(startYear: string, endYear: string) {}
+  async getLargestNearEarthObjectByMonth(
+    startYear: string,
+    endYear: string
+  ): Promise<void> {}
+
+  generateRangeIntervals(startYear, endYear) {
+    const monthStarts = eachMonthOfInterval(
+      new Date(`${startYear}-01-01`),
+      new Date(`${endYear}-12-31`)
+    );
+    //   const weekStarts = eachWeekOfMonth(monthStarts)
+    return eachMonthOfInterval(
+      new Date(`${startYear}-01-01`),
+      new Date(`${endYear}-12-31`)
+    );
+  }
 
   willSendRequest(request: RequestOptions): void {
     request.params.set("api_key", process.env.NASA_API_KEY ?? "DEMO_KEY");
