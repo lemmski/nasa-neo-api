@@ -21,7 +21,7 @@ export function eachMonthOfInterval(startDate: Date, endDate: Date) {
 }
 
 /* Create start dates for intervals of maximum 7 days spanning the whole month e.g. 1, 8, 15, 22 and 29 */
-export function eachIntervalStartDateForMonth(startDate: date) {
+export function eachIntervalStartDateForMonth(startDate: Date) {
   const intervalStartDates = [];
   intervalStartDates.push(startDate);
   const nextDate = new Date(startDate);

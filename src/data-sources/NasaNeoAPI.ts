@@ -1,6 +1,10 @@
 import { RESTDataSource, RequestOptions } from "apollo-datasource-rest";
 import { zonedTimeToUtc } from "date-fns-tz";
-import { eachMonthOfInterval } from "../utils/date-functions";
+import {
+  eachMonthOfInterval,
+  eachIntervalStartDateForMonth,
+  eachIntervalEndDateForMonth,
+} from "../utils/date-functions";
 
 interface FeedResponse {
   element_count?: number | null;
@@ -117,15 +121,14 @@ export default class NasaNeoAPI extends RESTDataSource {
     endYear: string
   ): Promise<void> {}
 
-  generateRangeIntervals(startYear, endYear) {
-    const monthStarts = eachMonthOfInterval(
-      new Date(`${startYear}-01-01`),
-      new Date(`${endYear}-12-31`)
-    );
-    //   const weekStarts = eachWeekOfMonth(monthStarts)
+  generateRangeIntervals(startYear: string, endYear: string) {
     return eachMonthOfInterval(
       new Date(`${startYear}-01-01`),
       new Date(`${endYear}-12-31`)
+    ).map((firstDayOfMonth) =>
+      eachIntervalEndDateForMonth(
+        eachIntervalStartDateForMonth(firstDayOfMonth)
+      )
     );
   }
 
