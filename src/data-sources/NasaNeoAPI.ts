@@ -108,6 +108,7 @@ export default class NasaNeoAPI extends RESTDataSource {
         (nearEarthObject: NearEarthObject[] | null | undefined) =>
           nearEarthObject ?? []
       )
+      .filter((neo) => neo)
       .sort((a, b) => {
         return (
           this.smallestDistanceFilteredValue(a) -
@@ -119,11 +120,12 @@ export default class NasaNeoAPI extends RESTDataSource {
   async getLargestNearEarthObjectByMonth(
     startYear: string,
     endYear: string
-  ): Promise<Promise<any[]>[]> {
+  ): Promise<Promise<FeedResponse[]>[]> {
+    // TODO: FIXME this structure, remove console logging and transient variables
     return this.generateRangeIntervals(startYear, endYear).map(
       async (monthIntervals, index) => {
-        await new Promise(res => setTimeout(res, index * 15000));
-        return await Promise.all(
+        await new Promise((res) => setTimeout(res, index * 15000));
+        const responsesForSingleMonth = await Promise.all(
           monthIntervals.map(([startDate, endDate]) => {
             console.log(
               "calling fetch at:",
@@ -133,12 +135,33 @@ export default class NasaNeoAPI extends RESTDataSource {
               "end:",
               endDate.toISOString().slice(0, 10)
             );
-            return this.get("neo/rest/v1/feed", {
-              start_date: startDate.toISOString().slice(0, 10),
-              end_date: endDate.toISOString().slice(0, 10),
-            });
+            /* There are responses from many dates, so we want to flatten the structure to single array from array of arrays before we reduce it to largest */
+            return Object.values(
+              this.get("neo/rest/v1/feed", {
+                start_date: startDate.toISOString().slice(0, 10),
+                end_date: endDate.toISOString().slice(0, 10),
+              }).near_earth_objects
+            )
+              .flat()
+              .filter((neo) => neo)
+              .reduce((largestNeo, currentValue) =>
+                (largestNeo.estimated_diameter.kilometers
+                  .estimated_diameter_min +
+                  largestNeo.estimated_diameter.kilometers
+                    .estimated_diameter_max) /
+                  2 >
+                (currentValue.estimated_diameter.kilometers
+                  .estimated_diameter_min +
+                  currentValue.estimated_diameter.kilometers
+                    .estimated_diameter_max) /
+                  2
+                  ? largestNeo
+                  : currentValue
+              );
           })
         );
+        console.log(responsesForSingleMonth);
+        return responsesForSingleMonth;
       }
     );
   }
