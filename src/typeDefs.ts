@@ -14,7 +14,7 @@ const typeDefs = gql`
 
   type EstimatedDiameters {
     feet: DiameterMinMax
-    kilometers: DiameterMinMax
+    kilometers: DiameterMinMax!
     meters: DiameterMinMax
     miles: DiameterMinMax
   }

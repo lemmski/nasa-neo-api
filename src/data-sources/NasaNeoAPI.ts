@@ -6,6 +6,19 @@ import {
   eachIntervalEndDateForMonth,
 } from "../utils/date-functions";
 
+interface NearEarthObject {
+  absolute_magnitude_h: number;
+  close_approach_data: CloseApproach[];
+  estimated_diameter: EstimatedDiameter;
+  id: string;
+  is_potentially_hazardous_asteroid: boolean;
+  is_sentry_object: boolean;
+  links: NearEarthObjectLinks;
+  name: string;
+  nasa_jpl_url: string;
+  neo_reference_id: string;
+}
+
 interface FeedResponse {
   element_count?: number | null;
   links?: FeedResponseLinks | null;
@@ -20,19 +33,6 @@ interface FeedResponseLinks {
   next: string;
   prev: string;
   self: string;
-}
-
-interface NearEarthObject {
-  absolute_magnitude_h: number;
-  close_approach_data: CloseApproach[];
-  estimated_diameter: EstimatedDiameter;
-  id: string;
-  is_potentially_hazardous_asteroid: boolean;
-  is_sentry_object: boolean;
-  links: NearEarthObjectLinks;
-  name: string;
-  nasa_jpl_url: string;
-  neo_reference_id: string;
 }
 
 interface CloseApproach {
@@ -81,17 +81,20 @@ export default class NasaNeoAPI extends RESTDataSource {
 
   smallestDistanceFilteredValue(nearEarthObject: NearEarthObject): number {
     // We might have multiple passes in the date range
+    // TODO FIXME Remove the exclamation mark
     return Math.min(
-      ...nearEarthObject.close_approach_data
-        .map((closeApproach) =>
-          parseFloat(closeApproach.miss_distance.astronomical)
+      ...(nearEarthObject
+        ?.close_approach_data!.map((closeApproach) =>
+          parseFloat(
+            closeApproach?.miss_distance?.astronomical ?? Infinity.toString()
+          )
         )
         .filter(
           (astronomicalDistance) =>
             astronomicalDistance !== Infinity &&
             astronomicalDistance !== -Infinity &&
             !isNaN(astronomicalDistance)
-        )
+        ) ?? Infinity)
     );
   }
 
@@ -109,7 +112,7 @@ export default class NasaNeoAPI extends RESTDataSource {
           nearEarthObject ?? []
       )
       .filter((neo) => neo)
-      .sort((a, b) => {
+      .sort((a: NearEarthObject, b: NearEarthObject) => {
         return (
           this.smallestDistanceFilteredValue(a) -
           this.smallestDistanceFilteredValue(b)
@@ -120,13 +123,13 @@ export default class NasaNeoAPI extends RESTDataSource {
   async getLargestNearEarthObjectByMonth(
     startYear: string,
     endYear: string
-  ): Promise<Promise<FeedResponse[]>[]> {
+  ): Promise<Promise<NearEarthObject[]>[]> {
     // TODO: FIXME this structure, remove console logging and transient variables
-    return this.generateRangeIntervals(startYear, endYear).map(
+    const response = await Promise.all(this.generateRangeIntervals(startYear, endYear).map(
       async (monthIntervals, index) => {
         await new Promise((res) => setTimeout(res, index * 15000));
-        const responsesForSingleMonth = await Promise.all(
-          monthIntervals.map(([startDate, endDate]) => {
+        const responsesForSingleMonth: any = await Promise.all(
+          monthIntervals.map(async ([startDate, endDate]) => {
             console.log(
               "calling fetch at:",
               new Date(),
@@ -136,34 +139,44 @@ export default class NasaNeoAPI extends RESTDataSource {
               endDate.toISOString().slice(0, 10)
             );
             /* There are responses from many dates, so we want to flatten the structure to single array from array of arrays before we reduce it to largest */
-            return Object.values(
-              this.get("neo/rest/v1/feed", {
+            return (this.get("neo/rest/v1/feed", {
                 start_date: startDate.toISOString().slice(0, 10),
                 end_date: endDate.toISOString().slice(0, 10),
-              }).near_earth_objects
+              }) as any).near_earth_objects
             )
               .flat()
               .filter((neo) => neo)
-              .reduce((largestNeo, currentValue) =>
-                (largestNeo.estimated_diameter.kilometers
-                  .estimated_diameter_min +
-                  largestNeo.estimated_diameter.kilometers
-                    .estimated_diameter_max) /
-                  2 >
-                (currentValue.estimated_diameter.kilometers
-                  .estimated_diameter_min +
-                  currentValue.estimated_diameter.kilometers
-                    .estimated_diameter_max) /
-                  2
+              .reduce((largestNeo: any, currentValue: any) => {
+                const {
+                  estimated_diameter: {
+                    kilometers: {
+                      estimated_diameter_min: largestMinDiameter,
+                      estimated_diameter_max: largestMaxDiameter,
+                    },
+                  },
+                } = largestNeo;
+                const {
+                  estimated_diameter: {
+                    kilometers: {
+                      estimated_diameter_min: currentMinDiameter,
+                      estimated_diameter_max: currentMaxDiameter,
+                    },
+                  },
+                } = currentValue;
+                console.log("reducerissa");
+                return (largestMinDiameter + largestMaxDiameter) / 2 >
+                  (currentMinDiameter + currentMaxDiameter) / 2
                   ? largestNeo
-                  : currentValue
-              );
+                  : currentValue;
+              });
           })
         );
-        console.log(responsesForSingleMonth);
+        console.log('single month response:', responsesForSingleMonth);
         return responsesForSingleMonth;
       }
-    );
+    ));
+    console.log(response)
+    return response
   }
 
   generateRangeIntervals(startYear: string, endYear: string) {
