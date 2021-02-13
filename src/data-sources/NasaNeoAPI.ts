@@ -139,14 +139,14 @@ export default class NasaNeoAPI extends RESTDataSource {
               endDate.toISOString().slice(0, 10)
             );
             /* There are responses from many dates, so we want to flatten the structure to single array from array of arrays before we reduce it to largest */
-            return (this.get("neo/rest/v1/feed", {
+            const feedResponse = await (this.get("neo/rest/v1/feed", {
                 start_date: startDate.toISOString().slice(0, 10),
                 end_date: endDate.toISOString().slice(0, 10),
-              }) as any).near_earth_objects
-            )
-              .flat()
+            }) as any)
+            return Object.values(feedResponse.near_earth_objects).flat()
               .filter((neo) => neo)
-              .reduce((largestNeo: any, currentValue: any) => {
+              .reduce(
+                (largestNeo: any, currentValue: any) => {
                 const {
                   estimated_diameter: {
                     kilometers: {
@@ -163,20 +163,22 @@ export default class NasaNeoAPI extends RESTDataSource {
                     },
                   },
                 } = currentValue;
-                console.log("reducerissa");
                 return (largestMinDiameter + largestMaxDiameter) / 2 >
                   (currentMinDiameter + currentMaxDiameter) / 2
                   ? largestNeo
                   : currentValue;
-              });
+              }
+              );
           })
         );
-        console.log('single month response:', responsesForSingleMonth);
+        console.log('single month response:', responsesForSingleMonth.length);
         return responsesForSingleMonth;
       }
     ));
-    console.log(response)
     return response
+  }
+
+  largestNeoReducer {
   }
 
   generateRangeIntervals(startYear: string, endYear: string) {
