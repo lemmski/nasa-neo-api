@@ -114,13 +114,12 @@ export default class NasaNeoAPI extends RESTDataSource {
     startYear: string,
     endYear: string
   ): Promise<Promise<NearEarthObject[]>[]> {
-    // TODO: FIXME this structure, remove console logging and transient variables
-    const response = await Promise.all(
+    const largestNeoByMonth = await Promise.all(
       this.generateRangeIntervals(startYear, endYear).map(
         async (monthIntervals, index) => {
           // Timeout is needed or we get HTTP code 429: 'Too many requests' response
           await new Promise((res) => setTimeout(res, index * 15000));
-          const responsesForSingleMonth: any = await Promise.all(
+          const largestNeosForSingleMonth: any = await Promise.all(
             monthIntervals.map(async ([startDate, endDate]) => {
               console.log(
                 "Calling fetch at:",
@@ -144,24 +143,24 @@ export default class NasaNeoAPI extends RESTDataSource {
             })
           );
           console.log(
-            "single month response:",
-            responsesForSingleMonth.reduce(this.largestNeoReducer)
+            "Single month response:",
+            largestNeosForSingleMonth.reduce(this.largestNeoReducer)
           );
-          return responsesForSingleMonth.reduce(this.largestNeoReducer);
+          return largestNeosForSingleMonth.reduce(this.largestNeoReducer);
         }
       )
     );
     console.log(
       "Largest in full response:",
-      response.reduce(this.largestNeoReducer).name,
+      largestNeoByMonth.reduce(this.largestNeoReducer).name,
       "min:",
-      response.reduce(this.largestNeoReducer).estimated_diameter.kilometers
+      largestNeoByMonth.reduce(this.largestNeoReducer).estimated_diameter.kilometers
         .estimated_diameter_min,
       "max:",
-      response.reduce(this.largestNeoReducer).estimated_diameter.kilometers
+      largestNeoByMonth.reduce(this.largestNeoReducer).estimated_diameter.kilometers
         .estimated_diameter_max
     );
-    return response;
+    return largestNeoByMonth;
   }
 
   largestNeoReducer(largestNeo: any, currentValue: any) {
