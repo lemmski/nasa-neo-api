@@ -10,7 +10,6 @@
     "lint": "npx prettier --write . && npx eslint . --ext .js,.jsx,.ts,.tsx",
     "populate-top-diameter-by-month": "tsc && node dist/utils/fetch-top-diameters-by-month.js",
     "codegen": "graphql-codegen --config codegen.yml",
-    "postinstall": "npm run codegen"
   },
   "author": "Aleksi Lemmetyinen",
   "license": "ISC",
