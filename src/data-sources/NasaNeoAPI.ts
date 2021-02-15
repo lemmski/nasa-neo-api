@@ -109,6 +109,33 @@ export default class NasaNeoAPI extends RESTDataSource {
       );
   }
 
+  async getLargestNeosForSingleMonth(monthIntervals: Array<Array<Date>>) {
+    return Promise.all(
+      monthIntervals.map(async ([startDate, endDate]) => {
+        process.env.DEBUG &&
+          console.log(
+            "Calling fetch at:",
+            new Date(),
+            "start:",
+            startDate.toISOString().slice(0, 10),
+            "end:",
+            endDate.toISOString().slice(0, 10)
+          );
+        /* There are responses from many dates, so we want to flatten
+         * the structure to single array from array of arrays before
+         * we reduce it to largest */
+        const feedResponse = await (this.get("neo/rest/v1/feed", {
+          start_date: startDate.toISOString().slice(0, 10),
+          end_date: endDate.toISOString().slice(0, 10),
+        }) as any);
+        return Object.values(feedResponse.near_earth_objects)
+          .flat()
+          .filter((neo) => neo)
+          .reduce(this.largestNeoReducer);
+      })
+    );
+  }
+
   async getLargestNearEarthObjectByMonth(
     startYear: string,
     endYear: string
@@ -117,30 +144,11 @@ export default class NasaNeoAPI extends RESTDataSource {
       this.generateRangeIntervals(startYear, endYear).map(
         async (monthIntervals, index) => {
           // Timeout is needed or we get HTTP code 429: 'Too many requests' response
-          await new Promise((res) => setTimeout(res, index * 15000));
-          const largestNeosForSingleMonth: any = await Promise.all(
-            monthIntervals.map(async ([startDate, endDate]) => {
-              process.env.DEBUG &&
-                console.log(
-                  "Calling fetch at:",
-                  new Date(),
-                  "start:",
-                  startDate.toISOString().slice(0, 10),
-                  "end:",
-                  endDate.toISOString().slice(0, 10)
-                );
-              /* There are responses from many dates, so we want to flatten
-               * the structure to single array from array of arrays before
-               * we reduce it to largest */
-              const feedResponse = await (this.get("neo/rest/v1/feed", {
-                start_date: startDate.toISOString().slice(0, 10),
-                end_date: endDate.toISOString().slice(0, 10),
-              }) as any);
-              return Object.values(feedResponse.near_earth_objects)
-                .flat()
-                .filter((neo) => neo)
-                .reduce(this.largestNeoReducer);
-            })
+          if (!process.env.NO_DELAY) {
+            await new Promise((res) => setTimeout(res, index * 15000));
+          }
+          const largestNeosForSingleMonth: any = await this.getLargestNeosForSingleMonth(
+            monthIntervals
           );
           process.env.DEBUG &&
             console.log(
