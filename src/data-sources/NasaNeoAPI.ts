@@ -121,7 +121,7 @@ export default class NasaNeoAPI extends RESTDataSource {
           await new Promise((res) => setTimeout(res, index * 15000));
           const largestNeosForSingleMonth: any = await Promise.all(
             monthIntervals.map(async ([startDate, endDate]) => {
-              console.log(
+              process.env.DEBUG && console.log(
                 "Calling fetch at:",
                 new Date(),
                 "start:",
@@ -142,7 +142,7 @@ export default class NasaNeoAPI extends RESTDataSource {
                 .reduce(this.largestNeoReducer);
             })
           );
-          console.log(
+          process.env.DEBUG && console.log(
             "Single month response:",
             largestNeosForSingleMonth.reduce(this.largestNeoReducer)
           );
@@ -150,7 +150,7 @@ export default class NasaNeoAPI extends RESTDataSource {
         }
       )
     );
-    console.log(
+    process.env.DEBUG && console.log(
       "Largest in full response:",
       largestNeoByMonth.reduce(this.largestNeoReducer).name,
       "min:",
@@ -180,6 +180,7 @@ export default class NasaNeoAPI extends RESTDataSource {
         },
       },
     } = currentValue;
+    /* Use average of the min and max diameter to determine the size */
     return (largestMinDiameter + largestMaxDiameter) / 2 >
       (currentMinDiameter + currentMaxDiameter) / 2
       ? largestNeo
@@ -187,6 +188,7 @@ export default class NasaNeoAPI extends RESTDataSource {
   }
 
   generateRangeIntervals(startYear: string, endYear: string) {
+    /* Create all intervals we want to fetch data for */
     return eachMonthOfInterval(
       new Date(`${startYear}-01-01`),
       new Date(`${endYear}-12-31`)

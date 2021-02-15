@@ -9,9 +9,14 @@ TODO:
 - Unify function names in resolvers.ts
 - Check API is written in capital letters and not Api
 - Remove progress-bar (types.d.ts)
-- Add instructions for NASA_API_KEY exporting
-- Add instructions for SQ
-- Add instructions running dev in docker
+
+## Running the app
+
+```bash
+$ NASA_API_KEY=<your_api_key>
+$ export NASA_API_KEY
+$ npm install && npm start
+```
 
 ## SonarQube
 
