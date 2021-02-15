@@ -1,5 +1,4 @@
 import { RESTDataSource, RequestOptions } from "apollo-datasource-rest";
-import { zonedTimeToUtc } from "date-fns-tz";
 import {
   eachMonthOfInterval,
   eachIntervalStartDateForMonth,

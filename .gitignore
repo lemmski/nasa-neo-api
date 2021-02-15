@@ -7,4 +7,4 @@ src/generated/
 #ignore vim swap files
 *~
 *.sw*
-
+.scannerwork

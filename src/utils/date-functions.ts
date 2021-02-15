@@ -3,7 +3,7 @@ export function eachMonthOfInterval(startDate: Date, endDate: Date) {
   const dates = [];
 
   // Throw an exception if start date is after end date or if any date is `Invalid Date`
-  if (!(startDate.getTime() <= endTime)) {
+  if (startDate.getTime() > endTime) {
     throw new RangeError("Invalid interval");
   }
 
