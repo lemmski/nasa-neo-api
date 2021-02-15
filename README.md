@@ -12,6 +12,16 @@ $ export NASA_API_KEY
 $ npm install && npm start
 ```
 
+## Running tests
+```bash
+$ npm test
+```
+with coverage
+
+```bash
+$ npm run coverage
+```
+
 ## ENV flags
 
 It takes a while for the data for the largest NEO to load from the API, currently it seems to take around 8 minutes 50 seconds. Without delay it seems to always hit the rate limit. 15000 ms batch delay was the smallest I could use it reliably with. You can try `NO_DELAY=true npm start` when starting to eliminate the delay. Use `DEBUG=true` to enable some logging.
