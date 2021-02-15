@@ -2,11 +2,7 @@
 
 ## npm install && npm start
 
-TODO:
-
-- Check all arrow functions -> change to implicit returns
-- Remove duplicate code in data sources
-- Unify function names in resolvers.ts
+### Compatible with Node 14.x
 
 ## Running the app
 
@@ -43,3 +39,9 @@ Run scanner:
 ```bash
    $ sudo docker run --network=host --rm -e SONAR_HOST_URL="http://localhost:9000" -e SONAR_LOGIN="${NEO_API_SONAR_TOKEN}" -v "${PWD}:/usr/src" sonarsource/sonar-scanner-cli
 ```
+
+TODO:
+
+- Check all arrow functions -> change to implicit returns
+- Remove duplicate code in data sources
+- Unify function names in resolvers.ts
