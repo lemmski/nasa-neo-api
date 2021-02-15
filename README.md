@@ -1,7 +1,5 @@
 # NASA NEO API
 
-## npm install && npm start
-
 ### Compatible with Node 14.x
 
 ## Running the app
