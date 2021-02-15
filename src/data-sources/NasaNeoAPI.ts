@@ -121,14 +121,15 @@ export default class NasaNeoAPI extends RESTDataSource {
           await new Promise((res) => setTimeout(res, index * 15000));
           const largestNeosForSingleMonth: any = await Promise.all(
             monthIntervals.map(async ([startDate, endDate]) => {
-              process.env.DEBUG && console.log(
-                "Calling fetch at:",
-                new Date(),
-                "start:",
-                startDate.toISOString().slice(0, 10),
-                "end:",
-                endDate.toISOString().slice(0, 10)
-              );
+              process.env.DEBUG &&
+                console.log(
+                  "Calling fetch at:",
+                  new Date(),
+                  "start:",
+                  startDate.toISOString().slice(0, 10),
+                  "end:",
+                  endDate.toISOString().slice(0, 10)
+                );
               /* There are responses from many dates, so we want to flatten
                * the structure to single array from array of arrays before
                * we reduce it to largest */
@@ -142,24 +143,26 @@ export default class NasaNeoAPI extends RESTDataSource {
                 .reduce(this.largestNeoReducer);
             })
           );
-          process.env.DEBUG && console.log(
-            "Single month response:",
-            largestNeosForSingleMonth.reduce(this.largestNeoReducer)
-          );
+          process.env.DEBUG &&
+            console.log(
+              "Single month response:",
+              largestNeosForSingleMonth.reduce(this.largestNeoReducer)
+            );
           return largestNeosForSingleMonth.reduce(this.largestNeoReducer);
         }
       )
     );
-    process.env.DEBUG && console.log(
-      "Largest in full response:",
-      largestNeoByMonth.reduce(this.largestNeoReducer).name,
-      "min:",
-      largestNeoByMonth.reduce(this.largestNeoReducer).estimated_diameter.kilometers
-        .estimated_diameter_min,
-      "max:",
-      largestNeoByMonth.reduce(this.largestNeoReducer).estimated_diameter.kilometers
-        .estimated_diameter_max
-    );
+    process.env.DEBUG &&
+      console.log(
+        "Largest in full response:",
+        largestNeoByMonth.reduce(this.largestNeoReducer).name,
+        "min:",
+        largestNeoByMonth.reduce(this.largestNeoReducer).estimated_diameter
+          .kilometers.estimated_diameter_min,
+        "max:",
+        largestNeoByMonth.reduce(this.largestNeoReducer).estimated_diameter
+          .kilometers.estimated_diameter_max
+      );
     return largestNeoByMonth;
   }
 

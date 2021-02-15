@@ -7,7 +7,7 @@ const resolvers = {
       { startDate, endDate }: { startDate: string; endDate: string },
       { dataSources }: { dataSources: any }
     ) =>
-      dataSources.nasaNeoApi.getAsteroidClosestToEarthInRange(
+      dataSources.nasaNeoAPI.getAsteroidClosestToEarthInRange(
         startDate,
         endDate
       ),
@@ -17,7 +17,7 @@ const resolvers = {
       { dataSources }: { dataSources: any }
     ) => {
       // TODO: Remove this structure
-      const response = await dataSources.nasaNeoApi.getLargestNearEarthObjectByMonth(
+      const response = await dataSources.nasaNeoAPI.getLargestNearEarthObjectByMonth(
         startYear,
         endYear
       );

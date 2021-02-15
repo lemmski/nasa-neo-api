@@ -10,7 +10,7 @@ const server = new ApolloServer({
   resolvers,
   dataSources: () => {
     return {
-      nasaNeoApi: new NasaNeoAPI(),
+      nasaNeoAPI: new NasaNeoAPI(),
     };
   },
 });

@@ -20,23 +20,23 @@ const GET_CLOSEST_NEO = gql`
 `;
 
 const constructTestServer = () => {
-  const nasaNeoApi = new NasaNeoAPI();
+  const nasaNeoAPI = new NasaNeoAPI();
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    dataSources: () => ({ nasaNeoApi }),
+    dataSources: () => ({ nasaNeoAPI }),
   });
 
-  return { server, nasaNeoApi };
+  return { server, nasaNeoAPI };
 };
 
 describe("[NasaNeoAPI.getAsteroidClosestToEarthInRange]", () => {
   it("should look up closest miss from api response", async () => {
-    const { server, nasaNeoApi } = constructTestServer();
+    const { server, nasaNeoAPI } = constructTestServer();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (nasaNeoApi.get as any) = jest.fn(() =>
-      Promise.resolve(mockNeoApiResponse)
+    (nasaNeoAPI.get as any) = jest.fn(() =>
+      Promise.resolve(mockNeoAPIResponse)
     );
     const { query } = createTestClient(server);
     const res = await query({
@@ -49,13 +49,13 @@ describe("[NasaNeoAPI.getAsteroidClosestToEarthInRange]", () => {
 
 describe("[NasaNeoAPI.generateRangeIntervals]", () => {
   it("should generate weekly intervals spanning every day in each month", async () => {
-    const nasaNeoApi = new NasaNeoAPI();
-    const intervals = nasaNeoApi.generateRangeIntervals("2017", "2019");
+    const nasaNeoAPI = new NasaNeoAPI();
+    const intervals = nasaNeoAPI.generateRangeIntervals("2017", "2019");
     expect(intervals).toMatchSnapshot();
   });
 });
 
-const mockNeoApiResponse = {
+const mockNeoAPIResponse = {
   near_earth_objects: {
     "2015-09-08": [
       {

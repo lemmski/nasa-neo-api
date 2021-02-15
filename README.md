@@ -8,7 +8,6 @@ TODO:
 - Remove duplicate code in data sources
 - Unify function names in resolvers.ts
 - Check API is written in capital letters and not Api
-- Remove progress-bar (types.d.ts)
 
 ## Running the app
 
