@@ -38,8 +38,9 @@ export function eachIntervalEndDateForMonth(startDates: Date[]) {
   return startDates.map((startDate) => {
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 6);
-    while (endDate.getMonth() !== startDate.getMonth())
+    while (endDate.getMonth() !== startDate.getMonth()) {
       endDate.setDate(endDate.getDate() - 1);
+    }
     return [startDate, endDate];
   });
 }

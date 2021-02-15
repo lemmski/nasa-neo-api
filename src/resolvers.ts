@@ -15,14 +15,11 @@ const resolvers = {
       _source: any,
       { startYear, endYear }: { startYear: string; endYear: string },
       { dataSources }: { dataSources: any }
-    ) => {
-      // TODO: Remove this structure
-      const response = await dataSources.nasaNeoAPI.getLargestNearEarthObjectByMonth(
+    ) =>
+      dataSources.nasaNeoAPI.getLargestNearEarthObjectByMonth(
         startYear,
         endYear
-      );
-      return response;
-    },
+      ),
   },
 };
 export default resolvers;
