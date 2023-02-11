@@ -17,7 +17,7 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
-    "@graphql-codegen/cli": "1.20.1",
+    "@graphql-codegen/cli": "3.0.0",
     "@graphql-codegen/typescript": "1.20.2",
     "@graphql-codegen/typescript-resolvers": "1.18.1",
     "@types/jest": "^26.0.20",
